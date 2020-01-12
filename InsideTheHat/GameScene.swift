@@ -24,6 +24,7 @@ class GameScene: SKScene {
         self.initializeWall()
         self.initializeWallMovement()
         self.initializeDoors()
+        self.initializeDoorsMovement()
         
     }
     
@@ -33,7 +34,63 @@ class GameScene: SKScene {
     
     func initializeDoors() {
         
+        self.setDoorAttributes(position: "left")
+        leftDoor.position = CGPoint(x: (view!.bounds.size.width / 2) - (25 * leftDoor.frame.size.width / 20), y: self.view!.bounds.size.height +
+            leftDoor.frame.size.height / 2)
+        leftDoor.zPosition = 0
+        addChild(leftDoor)
         
+        self.setDoorAttributes(position: "center")
+        centerDoor.position = CGPoint(x: (view!.bounds.size.width / 2), y: self.view!.bounds.size.height + centerDoor.frame.size.height / 2)
+        centerDoor.zPosition = 0
+        addChild(centerDoor)
+        
+        self.setDoorAttributes(position: "right")
+        rightDoor.position = CGPoint(x: (view!.bounds.size.width / 2) + (25 * rightDoor.frame.size.width / 20), y: self.view!.bounds.size.height +
+            rightDoor.frame.size.height / 2)
+        rightDoor.zPosition = 0
+        addChild(rightDoor)
+        
+    }
+    
+    func initializeDoorsMovement() {
+        
+        let doorSpeed: CGFloat = 250.0
+        var leftDoorAction: SKAction!
+        var centerDoorAction: SKAction!
+        var rightDoorAction: SKAction!
+        
+        self.enumerateChildNodes(withName: "*_door") {
+            node, stop in
+            
+            //print("Node name \(node.name!)")
+            
+            let nextDoorPosition = CGPoint(x: node.position.x, y: -(self.wall.frame.size.height - node.frame.size.height / 2))
+            let duration = self.distanceBetween(point: node.position, andPoint: nextDoorPosition) / doorSpeed
+            let moveDoorAction = SKAction.moveTo(y: nextDoorPosition.y, duration: Double(duration))
+            
+            let resetPositionAction = SKAction.run {
+                self.setDoorAttributes(position: node.name!)
+                node.position = CGPoint(x: node.position.x, y: self.view!.bounds.size.height + node.frame.size.height / 2)
+            }
+            
+            let delayAction = SKAction.wait(forDuration: 2.0)
+            let sequence = SKAction.sequence([moveDoorAction, resetPositionAction, delayAction])
+            
+            switch node.name! {
+            case "wrong_left_door", "correct_left_door":
+                leftDoorAction = SKAction.repeatForever(sequence)
+            case "wrong_center_door", "correct_center_door":
+                centerDoorAction = SKAction.repeatForever(sequence)
+            case "wrong_right_door", "correct_right_door":
+                rightDoorAction = SKAction.repeatForever(sequence)
+            default : break
+            }
+        }
+        
+        leftDoor.run(leftDoorAction)
+        centerDoor.run(centerDoorAction)
+        rightDoor.run(rightDoorAction)
         
     }
     
@@ -41,6 +98,7 @@ class GameScene: SKScene {
         
         rabbit = SKSpriteNode(imageNamed: "rabbit")
         rabbit.position = CGPoint(x: (view!.bounds.size.width / 2), y: rabbit.size.height)
+        rabbit.zPosition = 1
         
         let background = SKSpriteNode(imageNamed: "background")
         background.anchorPoint = .zero
@@ -97,6 +155,56 @@ class GameScene: SKScene {
         moveAction = SKAction.moveTo(x: nextPosition.x, duration: Double(duration))
         
         rabbit.run(moveAction)
+        
+    }
+    
+    func setDoorAttributes(position: String) {
+        
+        switch position {
+        case "wrong_left_door", "correct_left_door", "left":
+            if (arc4random_uniform(2) == 0) {
+                if (leftDoor == nil) {
+                    leftDoor = SKSpriteNode(imageNamed: "wrong_door")
+                }
+                leftDoor.texture = SKTexture(imageNamed: "wrong_door")
+                leftDoor.name = "wrong_left_door"
+            } else {
+                if (leftDoor == nil) {
+                    leftDoor = SKSpriteNode(imageNamed: "correct_door")
+                }
+                leftDoor.texture = SKTexture(imageNamed: "correct_door")
+                leftDoor.name = "correct_left_door"
+            }
+        case "wrong_center_door", "correct_center_door", "center":
+            if (arc4random_uniform(2) == 0) {
+                if (centerDoor == nil) {
+                    centerDoor = SKSpriteNode(imageNamed: "wrong_door")
+                }
+                centerDoor.texture = SKTexture(imageNamed: "wrong_door")
+                centerDoor.name = "wrong_center_door"
+            } else {
+                if (centerDoor == nil) {
+                    centerDoor = SKSpriteNode(imageNamed: "correct_door")
+                }
+                centerDoor.texture = SKTexture(imageNamed: "correct_door")
+                centerDoor.name = "correct_center_door"
+            }
+        case "wrong_right_door", "correct_right_door", "right":
+            if (arc4random_uniform(2) == 0) {
+                if (rightDoor == nil) {
+                    rightDoor = SKSpriteNode(imageNamed: "wrong_door")
+                }
+                rightDoor.texture = SKTexture(imageNamed: "wrong_door")
+                rightDoor.name = "wrong_right_door"
+            } else {
+                if (rightDoor == nil) {
+                    rightDoor = SKSpriteNode(imageNamed: "correct_door")
+                }
+                rightDoor.texture = SKTexture(imageNamed: "correct_door")
+                rightDoor.name = "correct_right_door"
+            }
+        default: break
+        }
         
     }
     
