@@ -5,6 +5,10 @@
 //  Created by Bret Williams on 12/24/19.
 //
 
+//bugs:
+//1. background doesn't fill entire screen - there is a black rectangle at the top
+//2. score doesn't increase
+
 import SpriteKit
 import GameplayKit
 
@@ -17,6 +21,38 @@ class GameScene: SKScene {
     private var leftDoor : SKSpriteNode!
     private var centerDoor : SKSpriteNode!
     private var rightDoor : SKSpriteNode!
+    private var isCollisionDetected : Bool = false
+    private var labelScore : SKLabelNode!
+    private var resetWave : Bool = false
+    private var score : Int = 0
+    
+    func detectCollisions() {
+        
+        self.enumerateChildNodes(withName: "*_door") {
+            
+            node, stop in
+            
+            //after the && we want to check to make sure at least half of the door has intersected the rabbit before triggering the collision
+            if node.frame.intersects(self.rabbit.frame) && (node.position.y - node.frame.height / 2) <= self.rabbit.position.y {
+                
+                if node.name?.contains("wrong") == true {
+                    
+                    self.isCollisionDetected = true
+                    let blinkAction = SKAction.sequence([
+                        SKAction.colorize(with: UIColor.red, colorBlendFactor: 0.5, duration: 0.1),
+                        SKAction.fadeAlpha(to: 0.0, duration: 0.2),
+                        SKAction.fadeAlpha(to: 1.0, duration: 0.2),
+                        SKAction.colorize(with: UIColor.white, colorBlendFactor: 1.0, duration: 0.1)
+                    ])
+                    self.rabbit.run(SKAction.repeat(blinkAction, count: 3))
+                    
+                }
+                node.isHidden = true
+            }
+            
+        }
+        
+    }
     
     override func didMove(to view: SKView) {
         
@@ -25,6 +61,7 @@ class GameScene: SKScene {
         self.initializeWallMovement()
         self.initializeDoors()
         self.initializeDoorsMovement()
+        self.initializeLabels()
         
     }
     
@@ -74,6 +111,9 @@ class GameScene: SKScene {
                 node.position = CGPoint(x: node.position.x, y: self.view!.bounds.size.height + node.frame.size.height / 2)
             }
             
+            node.isHidden = false
+            self.resetWave = true
+            
             let delayAction = SKAction.wait(forDuration: 2.0)
             let sequence = SKAction.sequence([moveDoorAction, resetPositionAction, delayAction])
             
@@ -91,6 +131,18 @@ class GameScene: SKScene {
         leftDoor.run(leftDoorAction)
         centerDoor.run(centerDoorAction)
         rightDoor.run(rightDoorAction)
+        
+    }
+    
+    func initializeLabels() {
+        
+        labelScore = SKLabelNode(fontNamed: "MarkerFelt-Thin")
+        labelScore.fontColor = UIColor.red
+        labelScore.fontSize = 20
+        labelScore.position = CGPoint(x: (3 * labelScore.fontSize), y: (view!.bounds.size.height - 2 * labelScore.fontSize))
+        labelScore.zPosition = 3
+        labelScore.text = "Score: \(score)"
+        addChild(labelScore)
         
     }
     
@@ -133,6 +185,19 @@ class GameScene: SKScene {
         let sequence = SKAction.sequence([moveWallAction, resetPositionAction, delayAction])
         
         wall.run(SKAction.repeatForever(sequence))
+        
+    }
+    
+    func initializeWave() {
+        
+        if self.isCollisionDetected {
+            self.isCollisionDetected = false
+        } else {
+            self.score += 10
+            self.labelScore.text = "Score: \(score)"
+        }
+        
+        self.resetWave = false
         
     }
     
@@ -208,6 +273,7 @@ class GameScene: SKScene {
         
     }
     
+      
     func touchDown(atPoint pos : CGPoint) {
         
     }
@@ -247,6 +313,23 @@ class GameScene: SKScene {
     
     
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        
+        if !self.isCollisionDetected {
+            self.detectCollisions()
+        }
+        
+        if resetWave {
+            self.initializeWave()
+        }
+        
+    }
+}
+
+extension String {
+    func contains(find: String) -> Bool{
+        return self.range(of: find) != nil
+    }
+    func containsIgnoringCase(find: String) -> Bool{
+        return self.range(of: find, options: .caseInsensitive) != nil
     }
 }
