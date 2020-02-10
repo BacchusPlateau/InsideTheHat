@@ -5,12 +5,10 @@
 //  Created by Bret Williams on 12/24/19.
 //
 
-//bugs:
-//1. background doesn't fill entire screen - there is a black rectangle at the top
-//2. score doesn't increase
 
 import SpriteKit
 import GameplayKit
+import AVFoundation
 
 class GameScene: SKScene {
     
@@ -25,6 +23,7 @@ class GameScene: SKScene {
     private var labelScore : SKLabelNode!
     private var resetWave : Bool = false
     private var score : Int = 0
+    private var backgroundMusic : AVAudioPlayer!
     
     func detectCollisions() {
         
@@ -45,7 +44,7 @@ class GameScene: SKScene {
                         SKAction.colorize(with: UIColor.white, colorBlendFactor: 1.0, duration: 0.1)
                     ])
                     self.rabbit.run(SKAction.repeat(blinkAction, count: 3))
-                    
+ 
                 }
                 node.isHidden = true
             }
@@ -62,6 +61,7 @@ class GameScene: SKScene {
         self.initializeDoors()
         self.initializeDoorsMovement()
         self.initializeLabels()
+        self.initializeMusic()
         
     }
     
@@ -109,10 +109,11 @@ class GameScene: SKScene {
             let resetPositionAction = SKAction.run {
                 self.setDoorAttributes(position: node.name!)
                 node.position = CGPoint(x: node.position.x, y: self.view!.bounds.size.height + node.frame.size.height / 2)
+                self.resetWave = true
             }
             
             node.isHidden = false
-            self.resetWave = true
+            
             
             let delayAction = SKAction.wait(forDuration: 2.0)
             let sequence = SKAction.sequence([moveDoorAction, resetPositionAction, delayAction])
@@ -139,8 +140,9 @@ class GameScene: SKScene {
         labelScore = SKLabelNode(fontNamed: "MarkerFelt-Thin")
         labelScore.fontColor = UIColor.red
         labelScore.fontSize = 20
-        labelScore.position = CGPoint(x: (3 * labelScore.fontSize), y: (view!.bounds.size.height - 2 * labelScore.fontSize))
+        labelScore.position = CGPoint(x: (view!.bounds.size.width - 2 * labelScore.fontSize), y: (view!.bounds.size.height - 2 * labelScore.fontSize))
         labelScore.zPosition = 3
+        labelScore.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
         labelScore.text = "Score: \(score)"
         addChild(labelScore)
         
@@ -153,11 +155,27 @@ class GameScene: SKScene {
         rabbit.zPosition = 1
         
         let background = SKSpriteNode(imageNamed: "background")
+        background.size.height = self.size.height   //this is needed to prevent black rectangle at top of screen
         background.anchorPoint = .zero
         background.zPosition = -1
         
         addChild(background)
         addChild(rabbit)
+        
+    }
+    
+    func initializeMusic() {
+        
+        let path = Bundle.main.path(forResource: "insidethehat_background", ofType:"mp3")
+        let fileUrl = NSURL(fileURLWithPath: path!)
+        
+        do {
+            backgroundMusic = try AVAudioPlayer(contentsOf: fileUrl as URL)
+            backgroundMusic.numberOfLoops = -1
+            backgroundMusic.play()
+        } catch {
+            print("Error playing music")
+        }
         
     }
     
@@ -192,9 +210,11 @@ class GameScene: SKScene {
         
         if self.isCollisionDetected {
             self.isCollisionDetected = false
+            self.playSoundEffect(whichSound: "wrongDoor")
         } else {
+            self.playSoundEffect(whichSound: "rightDoor")
             self.score += 10
-            self.labelScore.text = "Score: \(score)"
+            self.labelScore.text = "Score: \(self.score)"
         }
         
         self.resetWave = false
@@ -220,6 +240,23 @@ class GameScene: SKScene {
         moveAction = SKAction.moveTo(x: nextPosition.x, duration: Double(duration))
         
         rabbit.run(moveAction)
+        
+    }
+    
+    func playSoundEffect(whichSound: String) {
+        
+        var soundFileToPlay = ""
+        
+        switch whichSound {
+        case "wrongDoor" :
+            soundFileToPlay = "wrong_door"
+        case "rightDoor":
+            soundFileToPlay = "correct_door"
+        default:
+            break
+        }
+        
+        run(SKAction.playSoundFileNamed(soundFileToPlay, waitForCompletion: false))
         
     }
     

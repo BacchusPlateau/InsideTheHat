@@ -40,6 +40,9 @@
 		BAAF065F23B2CF610033ECE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAAF065D23B2CF610033ECE5 /* LaunchScreen.storyboard */; };
 		BAAF066A23B2CF610033ECE5 /* InsideTheHatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF066923B2CF610033ECE5 /* InsideTheHatTests.swift */; };
 		BAAF067523B2CF610033ECE5 /* InsideTheHatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF067423B2CF610033ECE5 /* InsideTheHatUITests.swift */; };
+		BAEE560123DE0FCD00F773C2 /* wrong_door.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAEE55FE23DE0FCD00F773C2 /* wrong_door.mp3 */; };
+		BAEE560223DE0FCD00F773C2 /* insidethehat_background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAEE55FF23DE0FCD00F773C2 /* insidethehat_background.mp3 */; };
+		BAEE560323DE0FCD00F773C2 /* correct_door.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAEE560023DE0FCD00F773C2 /* correct_door.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +102,9 @@
 		BAAF067023B2CF610033ECE5 /* InsideTheHatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InsideTheHatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAAF067423B2CF610033ECE5 /* InsideTheHatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsideTheHatUITests.swift; sourceTree = "<group>"; };
 		BAAF067623B2CF610033ECE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAEE55FE23DE0FCD00F773C2 /* wrong_door.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = wrong_door.mp3; sourceTree = "<group>"; };
+		BAEE55FF23DE0FCD00F773C2 /* insidethehat_background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = insidethehat_background.mp3; sourceTree = "<group>"; };
+		BAEE560023DE0FCD00F773C2 /* correct_door.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = correct_door.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +186,7 @@
 		BAAF064D23B2CF5E0033ECE5 /* InsideTheHat */ = {
 			isa = PBXGroup;
 			children = (
+				BAEE55FD23DE0F9100F773C2 /* Sound */,
 				BA38AC1023B406CE0004DC0A /* Art */,
 				BAAF064E23B2CF5E0033ECE5 /* AppDelegate.swift */,
 				BAAF065223B2CF5E0033ECE5 /* Actions.sks */,
@@ -209,6 +216,16 @@
 				BAAF067623B2CF610033ECE5 /* Info.plist */,
 			);
 			path = InsideTheHatUITests;
+			sourceTree = "<group>";
+		};
+		BAEE55FD23DE0F9100F773C2 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				BAEE560023DE0FCD00F773C2 /* correct_door.mp3 */,
+				BAEE55FF23DE0FCD00F773C2 /* insidethehat_background.mp3 */,
+				BAEE55FE23DE0FCD00F773C2 /* wrong_door.mp3 */,
+			);
+			path = Sound;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -318,8 +335,10 @@
 				BA38AC1223B407290004DC0A /* rabbit.png in Resources */,
 				BA0FB8EE23BD738900057874 /* wrong_door@2x~iphone.png in Resources */,
 				BA0FB8D923BD6D8A00057874 /* wall@2x~iphone.png in Resources */,
+				BAEE560223DE0FCD00F773C2 /* insidethehat_background.mp3 in Resources */,
 				BA0FB8CD23B7F4F000057874 /* background@2x.png in Resources */,
 				BA0FB8CC23B7F4F000057874 /* rabbit@3x.png in Resources */,
+				BAEE560323DE0FCD00F773C2 /* correct_door.mp3 in Resources */,
 				BA0FB8ED23BD738900057874 /* correct_door@2x~iphone.png in Resources */,
 				BA0FB8CB23B7F4F000057874 /* rabbit@2x~ipad.png in Resources */,
 				BA0FB8E723BD738900057874 /* wrong_door.png in Resources */,
@@ -331,6 +350,7 @@
 				BAAF065C23B2CF610033ECE5 /* Assets.xcassets in Resources */,
 				BA0FB8D823BD6D8A00057874 /* wall@2x~ipad.png in Resources */,
 				BA0FB8EA23BD738900057874 /* correct_door@3x.png in Resources */,
+				BAEE560123DE0FCD00F773C2 /* wrong_door.mp3 in Resources */,
 				BA0FB8CE23B7F4F000057874 /* background@3x.png in Resources */,
 				BA0FB8EB23BD738900057874 /* wrong_door@2x~ipad.png in Resources */,
 				BAAF065F23B2CF610033ECE5 /* LaunchScreen.storyboard in Resources */,
